@@ -24,8 +24,8 @@ const Authentication = () => {
                 </p>
               </div>
 
-              {/* <Login /> */}
-              <Register />
+              <Login /> 
+              {/* <Register />*/}
             </Card>
           </div>
         </Grid>
