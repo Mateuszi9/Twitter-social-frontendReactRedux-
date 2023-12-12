@@ -8,6 +8,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { useDispatch } from 'react-redux';
 import { registerUserAction } from '../../Redux/Auth/auth.action';
+import { useNavigate } from 'react-router-dom';
 
 const initialValues = {
   firstName: '',
@@ -25,6 +26,7 @@ const validationSchema = {
 const Register = () => {
   const [formValue, setFormValue] = useState();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = (values) => {
     values.gender = gender
@@ -144,6 +146,10 @@ const Register = () => {
           </Button>
         </Form>
       </Formik>
+      <div className='flex gap-2 items-center justify-center pt-5'>
+        <p>if you have already account?</p>
+        <Button onClick={()=>navigate("/login")}>Login</Button>
+      </div>
     </>
   );
 };
