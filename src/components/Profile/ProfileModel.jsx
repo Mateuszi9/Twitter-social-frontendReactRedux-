@@ -49,7 +49,7 @@ export default function ProfileModel({ open, handleClose }) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <form onSubmit={formik.onSubmit}>
+          <form onSubmit={formik.handleSubmit}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <IconButton onClick={handleClose}>

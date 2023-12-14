@@ -16,7 +16,7 @@ const HomePage = () => {
   const jwt = localStorage.getItem('jwt');
   const { auth } = useSelector((store) => store);
 
-  console.log('auth', auth);
+  console.log('home page auth', auth);
 
   return (
     <div className="px-20">
