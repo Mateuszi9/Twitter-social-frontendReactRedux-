@@ -14,7 +14,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { uploadToCloudinary } from '../../utils/uploadToCloudniry';
 import { useDispatch } from 'react-redux';
-import { createPostAction } from '../../Redux/Post/post.action';
+import { createCommentAction, createPostAction } from '../../Redux/Post/post.action';
 
 const style = {
   position: 'absolute',
@@ -63,6 +63,10 @@ const CreatePostModel = ({ handleClose, open }) => {
       dispatch(createPostAction(values))
     },
   });
+
+
+  
+
   return (
     <Modal
       open={open}
