@@ -10,6 +10,9 @@ import {
   REGISTER_FAILURE,
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
+  SEARCH_USER_FAILURE,
+  SEARCH_USER_REQUEST,
+  SEARCH_USER_SUCCESS,
   UPDATE_PROFILE_FAILURE,
   UPDATE_PROFILE_REQUEST,
   UPDATE_PROFILE_SUCCESS,
@@ -84,5 +87,20 @@ export const updateProfileAction = (reqData) => async (dispatch) => {
   } catch (error) {
     console.log('update profile-----', error);
     dispatch({ type: UPDATE_PROFILE_FAILURE, payload: error });
+  }
+};
+
+
+export const searchUser = (query) => async (dispatch) => {
+  dispatch({ type: SEARCH_USER_REQUEST });
+  try {
+    const { data } = await api.get(`/api/users/search?query=${query}`);
+
+   
+    console.log('search user -------', data);
+    dispatch({ type: SEARCH_USER_SUCCESS, payload: data });
+  } catch (error) {
+    console.log('profile -------', error);
+    dispatch({ type: SEARCH_USER_FAILURE, payload: error });
   }
 };
