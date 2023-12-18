@@ -5,7 +5,7 @@ import {
   Grid,
   IconButton,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import WestIcon from '@mui/icons-material/West';
 import AddIcCallIcon from '@mui/icons-material/AddIcCall';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
@@ -17,6 +17,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createMessage, getAllChats } from '../../Redux/Message/message.action';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { uploadToCloudinary } from '../../utils/uploadToCloudniry';
+import SockJS from 'sockjs-client';
+import Stom from 'stompjs';
 
 const Message = () => {
   const dispatch = useDispatch();
@@ -25,6 +27,7 @@ const Message = () => {
   const [messages, setMessages] = useState([]);
   const [selectedImage, setSelectedImage] = useState();
   const [loading, setLoading] = useState(false);
+  const chatContainerRef = useRef(null);
 
   useEffect(() => {
     dispatch(getAllChats());
@@ -44,12 +47,63 @@ const Message = () => {
       content: value,
       image: selectedImage,
     };
-    dispatch(createMessage(message));
+    dispatch(createMessage({ message, sendMessageToServer }));
+  };
+
+  //useEffect(() => {
+  //  setMessages([...messages, message.message]);
+  //}, [message.message]);
+
+  const [stompClient, setStompClient] = useState(null);
+
+  useEffect(() => {
+    const sock = new SockJS('http://localhost:5454/ws');
+    const stomp = Stom.over(sock);
+    setStompClient(stomp);
+
+    stomp.connect({}, onConnect, onErr);
+  }, []);
+
+  const onConnect = () => {
+    console.log('websocket conneced...');
+  };
+
+  const onErr = (error) => {
+    console.log('error', error);
   };
 
   useEffect(() => {
-    setMessages([...messages, message.message]);
-  }, [message.message]);
+    if (stompClient && auth.user && currentChat) {
+      const subscription = stompClient.subscribe(
+        `/user/${currentChat.id}/private`,
+        onMessageReice
+      );
+    }
+  });
+
+  const sendMessageToServer = (newMessage) => {
+    if (stompClient && newMessage) {
+      stompClient.send(
+        `/app/chat/${currentChat?.id.toString()}`,
+        {},
+        JSON.stringify(newMessage)
+      );
+    }
+  };
+
+  const onMessageReice = (payload) => {
+    const recivedMessage = JSON.parse(payload.body);
+    console.log('message revice from websocket', recivedMessage);
+
+    setMessages([...messages, recivedMessage]);
+  };
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <div>
@@ -110,7 +164,7 @@ const Message = () => {
                 </div>
               </div>
 
-              <div
+              <div ref={chatContainerRef} 
                 className="hideScrollbar overflow-y-scroll h-[82vh] px-2
                         space-y-5 py-5"
               >
