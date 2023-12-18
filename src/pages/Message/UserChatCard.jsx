@@ -25,7 +25,7 @@ const UserChatCard = ({chat}) => {
             <MoreHorizIcon />{' '}
           </IconButton>
         }
-        title={auth.user.id===chat.users[0].id?chat.users[1].firstName+" "+
+        title={auth.user?.id===chat.users[0]?.id?chat.users[1].firstName+" "+
             chat.users[1].lastName:chat.users[0].firstName+" "+
             chat.users[0].lastName}
         subheader={'new message'}
